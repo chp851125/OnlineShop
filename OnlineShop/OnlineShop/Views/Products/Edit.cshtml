@@ -1,0 +1,110 @@
+﻿@model OnlineShop.Models.Product
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h5>Item</h5>
+<hr />
+
+<form asp-action="Edit" enctype="multipart/form-data">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row">
+        <div class="form-group col-8">
+            <label asp-for="Name" class="control-label">商品名稱</label>
+            <input asp-for="Name" class="form-control" />
+        </div>
+        <div class="form-group col-4">
+            <label asp-for="CategoryId" class="control-label">類別</label>
+            <select class="form-control" asp-for="CategoryId" asp-items="ViewBag.Categories"></select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Description" class="control-label">簡介</label>
+        <textarea asp-for="Description" class="form-control" rows="5"></textarea>
+    </div>
+    <div class="row">
+        <div class="form-group col-6">
+            <label asp-for="Price" class="control-label">單價</label>
+            <input asp-for="Price" class="form-control" />
+        </div>
+        <div class="form-group col-6">
+            <label asp-for="Stock" class="control-label">庫存</label>
+            <input asp-for="Stock" class="form-control" />
+        </div>
+    </div>
+    @*<div class="form-group">
+            <label asp-for="Image" class="control-label">圖片</label>
+            <input type="file" class="form-control-file">
+        </div>*@
+    <div class="form-group">
+        <label asp-for="Image" class="control-label">圖片</label>
+        <input type="file" name="myimg" id="myimg" class="form-control-file">
+        <span asp-validation-for="Image" class="text-danger"></span>
+    </div>
+    <img id="preview" style="max-height:200px;" />
+    @*<div class="form-group">
+            <label asp-for="Content" class="control-label">內容</label>
+            <textarea asp-for="Content" class="form-control"></textarea>
+        </div>*@
+    <div class="form-group">
+        <label asp-for="Content" class="control-label"></label>
+        <textarea asp-for="Content" class="form-control" id="editor"></textarea>
+        <span asp-validation-for="Content" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+    </div>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.1.0.js"></script>
+<script src="~/lib/ckeditor5/build/ckeditor.js"></script>
+<script>
+    $('#myimg').on('change', function (e) {
+        const file = this.files[0];
+        const objectURL = URL.createObjectURL(file);    // 使用 createObjectURL 產生圖片url
+        $('#preview').attr('src', objectURL);
+    });
+</script>
+<script>
+    ClassicEditor
+        .create(document.querySelector('#editor'), {
+            toolbar: {
+                items: [
+                    'heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList',
+                    '|', 'alignment', 'outdent', 'indent', '|', 'fontSize', 'fontColor',
+                    '|', 'imageUpload', 'blockQuote', 'insertTable', 'mediaEmbed',
+                    'undo', 'redo'
+                ]
+            },
+            image: {
+                toolbar: [
+                    'imageTextAlternative', 'imageStyle:inline',
+                    'imageStyle:block', 'imageStyle:side'
+                ]
+            },
+            table: {
+                contentToolbar: [
+                    'tableColumn', 'tableRow', 'mergeTableCells'
+                ]
+            },
+            licenseKey: '',
+        })
+        .then(editor => {
+            window.editor = editor;
+        })
+        .catch(error => {
+            console.error('Oops, something went wrong!');
+            console.error(error);
+        });
+</script>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

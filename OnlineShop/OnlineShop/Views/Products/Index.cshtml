@@ -1,0 +1,82 @@
+﻿@model PaginatedList<OnlineShop.Models.Product>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>商品列表</h2>
+
+<div style="text-align: right" class="row">
+    <div class="col-6"></div>
+    <form asp-action="Index" class="col-4 ">
+        <div class="input-group input-group-sm ">
+            <input class="form-control" type="text" placeholder="Name" name="searchString" />
+            <input class="btn btn-sm btn-primary" type="submit" value="Search" />
+        </div>
+    </form>
+    <div class="col-2">
+        <a asp-action="Create" class="btn btn-sm btn-primary" style="width: 200px">新增項目</a>
+    </div>
+</div>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                商品名稱
+            </th>
+            <th>
+                類別
+            </th>
+            <th>
+                單價
+            </th>
+            <th>
+                庫存
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @if (item.Stock > 0)
+                    {
+                        @Html.Raw("<span class=" + "\" badge bg-success text-white \"" + ">在庫中</span>")
+                    }
+                    else
+                    {
+                        @Html.Raw("<span class=" + "\" badge bg-warning text-dark \"" + ">缺貨中</span>")
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<div class="d-flex justify-content-center">
+    <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-default @prevDisabled">Previous</a>
+    <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-currentFilter="@ViewData["CurrentFilter"]" class="btn btn-default @nextDisabled">Next</a>
+</div>
+
